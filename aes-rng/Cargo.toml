@@ -1,0 +1,26 @@
+[package]
+name = "aes-rng"
+version = "0.1.0"
+authors = ["RustCrypto Developers"]
+license = "MIT/Apache-2.0"
+description = "AES-NI random-number generator"
+documentation = "https://docs.rs/aes-rng"
+repository = "https://github.com/RustCrypto/stream-ciphers"
+keywords = ["crypto", "stream-cipher"]
+categories = ["cryptography"]
+
+[badges]
+travis-ci = { repository = "RustCrypto/stream-ciphers" }
+
+[[bench]]
+harness = false
+name = "rngs"
+
+[dependencies]
+rand_core = "0.2"
+
+[dev-dependencies]
+criterion = "0.2"
+itertools = "0.7"
+xoshiro = "0.0.3"
+rand = "0.5"

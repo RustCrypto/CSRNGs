@@ -7,6 +7,23 @@ All algorithms are split into separate crates and implemented using
 do not require the standard library (i.e. `no_std` capable) and can
 be easily used for bare-metal programming.
 
+## Warnings
+
+Crates in this repository have not yet received any formal cryptographic and
+security reviews.
+
+**USE AT YOUR OWN RISK.**
+
+## Crates
+| Name | Crates.io | Documentation |
+| ---- | :--------:| :------------:|
+| `aes-rng` | [![crates.io](https://img.shields.io/crates/v/aes-rng.svg)](https://crates.io/crates/aes-rng) | [![Documentation](https://docs.rs/aes-rng/badge.svg)](https://docs.rs/aes-rng) |
+
+### Minimum Rust version
+All crates in this repository support Rust 1.27 or higher. In future minimum
+supported Rust version can be changed, but it will be done with the minor
+version bump.
+
 ## License
 
 All crates licensed under either of
