@@ -1,0 +1,21 @@
+[package]
+name = "belt-hmac-rng"
+version = "0.1.0"
+description = "Pure Rust implementation of cryptographically secure random number generator based on the Belt-HMAC PRNG."
+authors = ["RustCrypto Developers"]
+license = "MIT OR Apache-2.0"
+edition = "2021"
+readme = "README.md"
+documentation = "https://docs.rs/belt-hmac-rng"
+repository = "https://github.com/RustCrypto/CSRNGs"
+keywords = ["crypto", "rng", "belt-hmac", "hmac", "stb"]
+categories = ["cryptography", "no-std"]
+
+
+[dependencies]
+rand_core = "0.6.4"
+belt-hash = "0.1.1"
+hmac = { version = "0.12.1", features = ["reset"] }
+
+[dev-dependencies]
+hex-literal = "0.4.1"
