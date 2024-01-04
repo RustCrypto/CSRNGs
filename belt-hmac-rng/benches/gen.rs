@@ -3,10 +3,7 @@
 
 extern crate test;
 
-use test::{
-    Bencher,
-    black_box
-};
+use test::{black_box, Bencher};
 
 use rand_core::{RngCore, SeedableRng};
 

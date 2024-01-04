@@ -13,9 +13,10 @@ categories = ["cryptography", "no-std"]
 
 
 [dependencies]
-rand_core = { version = "0.6.4", default-features = false, features = ["getrandom"] }
+rand_core = { version = "0.6.4", default-features = false }
 belt-hash = { version = "0.1.1", default-features = false }
 hmac = { version = "0.12.1", features = ["reset"] }
 
 [dev-dependencies]
+rand_core = { version = "0.6.4", default-features = false, features = ["getrandom"] }
 hex-literal = "0.4.1"
