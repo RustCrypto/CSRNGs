@@ -12,8 +12,8 @@
 //! [STB 34.101.47-2017]: https://apmi.bsu.by/assets/files/std/brng-spec25.pdf
 #![no_std]
 #![doc(
-html_logo_url = "https://raw.githubusercontent.com/RustCrypto/media/6ee8e381/logo.svg",
-html_favicon_url = "https://raw.githubusercontent.com/RustCrypto/media/6ee8e381/logo.svg"
+    html_logo_url = "https://raw.githubusercontent.com/RustCrypto/media/6ee8e381/logo.svg",
+    html_favicon_url = "https://raw.githubusercontent.com/RustCrypto/media/6ee8e381/logo.svg"
 )]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![warn(missing_docs, rust_2018_idioms)]
@@ -22,12 +22,11 @@ html_favicon_url = "https://raw.githubusercontent.com/RustCrypto/media/6ee8e381/
 use belt_hash::BeltHash;
 use hmac::{
     digest::{
-        FixedOutputReset,
         generic_array::GenericArray,
         typenum::{U32, U64},
+        FixedOutputReset,
     },
-    Hmac,
-    Mac,
+    Hmac, Mac,
 };
 use rand_core::{
     block::{BlockRng, BlockRngCore},
