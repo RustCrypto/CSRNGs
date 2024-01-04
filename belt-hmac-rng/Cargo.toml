@@ -20,3 +20,6 @@ hmac = { version = "0.12.1", features = ["reset"] }
 [dev-dependencies]
 rand_core = { version = "0.6.4", default-features = false, features = ["getrandom"] }
 hex-literal = "0.4.1"
+
+[features]
+getrandom = ["rand_core/getrandom"]
