@@ -32,6 +32,8 @@ use rand_core::{
     block::{BlockRng, BlockRngCore},
     CryptoRng, Error, RngCore, SeedableRng,
 };
+#[cfg(feature = "zeroize")]
+use zeroize::{Zeroize, ZeroizeOnDrop};
 
 /// Belt-HMAC-HBELT random number generator.
 pub struct BrngHmacHbelt(BlockRng<BeltHmacRngCore>);
@@ -39,29 +41,26 @@ pub struct BrngHmacHbelt(BlockRng<BeltHmacRngCore>);
 type HmacHbelt = Hmac<BeltHash>;
 
 const BUFSIZE: usize = 32;
-const BLOCKSIZE: usize = 8;
 
 /// Belt-HMAC-HBELT random number generator core.
 pub struct BeltHmacRngCore {
     r: GenericArray<u8, U32>,
     s: GenericArray<u8, U32>,
-    key: GenericArray<u8, U32>,
+    hmac: HmacHbelt,
 }
 
 impl BeltHmacRngCore {
     /// Fill the buffer with random data.
     pub fn fill(&mut self, dest: &mut [u8]) {
-        //SAFETY: Key is always present, by default it is filled with zeros
-        let mut hmac = HmacHbelt::new_from_slice(&self.key).unwrap();
         // 𝑌𝑖 ← hmac[ℎ](𝐾, 𝑟 ‖ 𝑆);
-        hmac.update(&self.r);
-        hmac.update(&self.s);
-        let y = hmac.finalize_fixed_reset();
+        self.hmac.update(&self.r);
+        self.hmac.update(&self.s);
+        let y = self.hmac.finalize_fixed_reset();
         dest[..BUFSIZE].copy_from_slice(&y);
 
         // 𝑟 ← hmac[ℎ](𝐾, 𝑟).
-        hmac.update(&self.r);
-        hmac.finalize_into_reset(&mut self.r);
+        self.hmac.update(&self.r);
+        self.hmac.finalize_into_reset(&mut self.r);
     }
 }
 
@@ -70,33 +69,45 @@ impl BlockRngCore for BeltHmacRngCore {
     type Results = [u32; 8];
 
     fn generate(&mut self, results: &mut Self::Results) {
-        let mut buf = [0u8; BUFSIZE * BLOCKSIZE];
+        let mut buf = [0u8; BUFSIZE];
         self.fill(&mut buf);
-        for i in 0..BLOCKSIZE {
+
+        for i in 0..BUFSIZE / 4 {
             results[i] =
                 u32::from_le_bytes([buf[i * 4], buf[i * 4 + 1], buf[i * 4 + 2], buf[i * 4 + 3]]);
         }
     }
 }
 
+#[cfg(feature = "zeroize")]
+impl ZeroizeOnDrop for BeltHmacRngCore {}
+
 impl SeedableRng for BeltHmacRngCore {
     type Seed = GenericArray<u8, U64>;
 
-    fn from_seed(seed: Self::Seed) -> Self {
-        let key = &seed[..BUFSIZE];
-        let iv = &seed[BUFSIZE..BUFSIZE + BUFSIZE];
+    #[allow(unused_mut)]
+    #[allow(clippy::let_and_return)]
+    fn from_seed(mut seed: Self::Seed) -> Self {
+        let rng_core = {
+            let key = &seed[..BUFSIZE];
+            let iv = &seed[BUFSIZE..BUFSIZE + BUFSIZE];
+            let mut hmac = HmacHbelt::new_from_slice(key).unwrap();
 
-        let mut hmac = HmacHbelt::new_from_slice(key).unwrap();
+            // 𝑟 ← hmac[ℎ](𝐾, 𝑆).
+            hmac.update(iv);
+            let r = hmac.finalize_fixed_reset();
 
-        // 𝑟 ← hmac[ℎ](𝐾, 𝑆).
-        hmac.update(iv);
-        let r = hmac.finalize_fixed_reset();
+            BeltHmacRngCore {
+                r,
+                hmac,
+                s: GenericArray::<u8, U32>::clone_from_slice(iv),
+            }
+        };
 
-        BeltHmacRngCore {
-            r,
-            s: GenericArray::<u8, U32>::clone_from_slice(iv),
-            key: GenericArray::<u8, U32>::clone_from_slice(key),
-        }
+        #[cfg(feature = "zeroize")]
+        seed.zeroize();
+
+        rng_core
     }
 }
 
