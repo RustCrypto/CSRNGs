@@ -1,0 +1,43 @@
+[package]
+name = "nist-drbg-rs"
+version = "0.1.2"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+keywords = ["drbg", "csprng", "nist"]
+categories = ["cryptography"]
+authors = [
+    "Sam Leonard <tritoke@protonmail.com>",
+    "Giacomo Pope <giacomopope@gmail.com>",
+]
+description = "Implementation of NIST SP 800-90A Rev. 1 for Deterministic Random Bit Generators"
+documentation = "https://docs.rs/nist-drbg-rs/0.1.0/nist_drbg_rs"
+readme = "README.md"
+homepage = "https://github.com/tritoke/nist-drbg-rs"
+repository = "https://github.com/tritoke/nist-drbg-rs"
+
+[features]
+default = ["hash-drbg", "hmac-drbg", "ctr-drbg", "rng"]
+hash-drbg = ["sha1", "sha2"]
+sha1 = ["dep:sha1", "dep:digest"]
+sha2 = ["dep:sha2", "dep:digest"]
+hmac-drbg = ["hmac-sha1", "hmac-sha2"]
+hmac-sha1 = ["dep:hmac", "dep:sha1", "dep:digest"]
+hmac-sha2 = ["dep:hmac", "dep:sha2", "dep:digest"]
+ctr-drbg = ["aes-ctr", "tdea-ctr"]
+aes-ctr = ["dep:aes"]
+tdea-ctr = ["dep:des"]
+rng = ["dep:rand_core"]
+
+[dependencies]
+digest = { version = "0.11", default-features = false, features = ["mac"], optional = true }
+sha1 = { version = "0.11", default-features = false, optional = true }
+sha2 = { version = "0.11", default-features = false, optional = true }
+hmac = { version = "0.13", default-features = false, optional = true }
+aes = { version = "0.9.0-rc.4", default-features = false, optional = true }
+des = { version = "0.9.0-rc.3", default-features = false, optional = true }
+rand_core = { version = "0.10", optional = true }
+
+[dev-dependencies]
+blobby = "0.4"
+hex = "0.4"
+hex_lit = "0.1"
