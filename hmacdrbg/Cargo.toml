@@ -1,0 +1,20 @@
+[package]
+name = "hmacdrbg"
+version = "0.0.1"
+description = "Pure Rust implementation of HMAC_DRBG as described in NIST SP800-90A"
+authors = ["RustCrypto Developers"]
+license = "Apache-2.0 OR MIT"
+homepage = "https://github.com/RustCrypto/CSRNGs/tree/master/hmacdrbg"
+repository = "https://github.com/RustCrypto/CSRNGs"
+readme = "README.md"
+categories = ["cryptography", "no-std"]
+keywords = ["random", "rng"]
+edition = "2024"
+rust-version = "1.85"
+
+[dependencies]
+hmac = { version = "0.13", default-features = false }
+
+[dev-dependencies]
+hex-literal = "1"
+sha2 = "0.11"
